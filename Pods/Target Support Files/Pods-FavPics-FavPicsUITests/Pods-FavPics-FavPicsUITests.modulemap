@@ -1,0 +1,6 @@
+framework module Pods_FavPics_FavPicsUITests {
+  umbrella header "Pods-FavPics-FavPicsUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
