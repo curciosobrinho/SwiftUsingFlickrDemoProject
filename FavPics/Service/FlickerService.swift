@@ -30,7 +30,8 @@ enum RequestConfig {
 
 class FlickrConstants {
     
-    static let api_key = "49f0e475662a927886f24de907a5a4d3"
+    /// TODO: add your api_key
+    static let api_key = "XXXXXX"
     static let per_page = 60
     static let featureURL = "https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=\(FlickrConstants.api_key)&format=json&nojsoncallback=1"
     static let searchURL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(FlickrConstants.api_key)&format=json&nojsoncallback=1&safe_search=1&per_page=\(FlickrConstants.per_page)&text=%@&page=%ld"
