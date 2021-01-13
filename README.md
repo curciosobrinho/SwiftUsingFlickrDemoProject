@@ -16,7 +16,10 @@ Anyways, hope it can help...
 
 Setup
 Go to https://identity.flickr.com and either create a new Flickr account, or sign in with your existing account.
-Once signed in successfully, go to Flickr API Explorer. https://www.flickr.com/services/api/explore/flickr.photos.search
+Once signed in successfully, go to Flickr API Explorer. 
+
+https://www.flickr.com/services/api/explore/flickr.photos.search
+
 Find and click Call Method… at the bottom of the page.
 This will generate a URL link at the very bottom of the page that looks like:
 
