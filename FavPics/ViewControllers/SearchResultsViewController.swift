@@ -8,12 +8,23 @@
 import UIKit
 
 class SearchResultsViewController : UIViewController, PhotoCollectionDelegate {
-   
+    
     var photoCollectionVC: PhotoCollectViewController?
-    var photosObj: Photos?
+    let photosObj: Photos
     var photos: [Photo] = [Photo]()
-    var searchTerm: String?
+    let searchTerm: String
     var currentPage: Int = 1
+    
+    init(photosObj: Photos, photos: [Photo], searchTerm: String) {
+        self.photosObj = photosObj
+        self.photos = photos
+        self.searchTerm = searchTerm
+        super.init(nibName:nil, bundle:nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,9 +34,9 @@ class SearchResultsViewController : UIViewController, PhotoCollectionDelegate {
         photoCollectionVC?.view.frame = self.view.bounds
         photoCollectionVC?.delegate = self
         self.view.addSubview(photoCollectionVC!.view)
-        AddObserver()
+        addObserver()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         reloadData()
@@ -35,7 +46,7 @@ class SearchResultsViewController : UIViewController, PhotoCollectionDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func AddObserver() {
+    func addObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadDataFromNotification), name: .FavoriteChanged, object: nil)
     }
     
@@ -46,43 +57,38 @@ class SearchResultsViewController : UIViewController, PhotoCollectionDelegate {
     func reloadData() {
         self.photoCollectionVC?.updatePhotos(photos: photos)
     }
- 
+    
     func didScrollNearTheEnd() {
         
         let searchService = FlickrSearchService()
         
-        if let searchText = searchTerm, let photosObj = photosObj {
-            
-            if currentPage < photosObj.page {
-                currentPage = photosObj.page
-            }
-            
-            currentPage += 1
-            
-            searchService.request(searchText, pageNo: currentPage) { (result) in
-                
-                switch result {
-                case .Success(let results):
-                    if let photos = results{
-                        self.photos.append(contentsOf: photos.photo)
-                        self.reloadData()
-                    }
-                case .Failure(let message):
-                    // here we would treat the failure with an alert or something
-                    print(message)
-                    return;
-                case .Error(let error):
-                    // here we would treat the failure with an alert or something
-                    print(error)
-                    return;
-                }
-                
-            }
+        
+        if currentPage < photosObj.page {
+            currentPage = photosObj.page
         }
+        
+        currentPage += 1
+        
+        searchService.request(searchTerm, pageNo: currentPage) { (result) in
+            
+            switch result {
+            case .Success(let results):
+                if let photos = results{
+                    self.photos.append(contentsOf: photos.photo)
+                    self.reloadData()
+                }
+            case .Failure(let message):
+                // here we would treat the failure with an alert or something
+                print(message)
+            case .Error(let error):
+                // here we would treat the failure with an alert or something
+                print(error)
+            }
+            
+        }
+        
     }
     
-    /// not needed
-    func didPressFavoriteForPhoto(photo: Photo) {}
     
 }
 

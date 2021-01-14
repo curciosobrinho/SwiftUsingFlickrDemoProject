@@ -21,14 +21,14 @@ class FavoritesViewController : UIViewController, PhotoCollectionDelegate {
         photoCollectionVC?.delegate = self
         self.view.addSubview(photoCollectionVC!.view)
         self.title = "Favorites"
-        AddObserver()
+        addObserver()
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func AddObserver() {
+    func addObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadDataFromNotification), name: .FavoriteChanged, object: nil)
     }
     
@@ -58,6 +58,4 @@ class FavoritesViewController : UIViewController, PhotoCollectionDelegate {
         }
     }
     
-    /// here this one does nothing
-    func didScrollNearTheEnd() {}
 }

@@ -13,8 +13,8 @@ class SearchViewController: UIViewController, UISearchBarDelegate{
     @IBOutlet weak var tableView: UITableView!
     
     let tableCellReuse = "tablecellreuse"
-    var resultSearchController = UISearchController()
-    var searchResults: [[String : Photos]] = [[String : Photos]]()
+    var resultSearchController: UISearchController?
+    var searchResults: [(String, Photos)] = [(String, Photos)]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +42,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate{
                 switch result {
                 case .Success(let results):
                     if let photos = results{
-                        self.searchResults.insert([searchText : photos], at: 0)
+                        self.searchResults.insert((searchText, photos), at: 0)
                         self.reloadData()
                         self.dismissSearchBar()
                     }
@@ -50,13 +50,11 @@ class SearchViewController: UIViewController, UISearchBarDelegate{
                     // here we would treat the failure with an alert or something
                     print(message)
                     self.dismissSearchBar()
-                    return;
+
                 case .Error(let error):
                     // here we would treat the failure with an alert or something
                     print(error)
-                    self.dismissSearchBar()
-                    return;
-                    
+                    self.dismissSearchBar() 
                 }
                 
             }
@@ -72,7 +70,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate{
     
     func dismissSearchBar() {
         DispatchQueue.main.async {
-            self.resultSearchController.isActive = false
+            self.resultSearchController?.isActive = false
         }
     }
     
@@ -89,9 +87,8 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: tableCellReuse, for: indexPath)
 
         let result = self.searchResults[indexPath.row]
-            
-        let resultText = result.keys.first
-        let resultValue: Photos = result.values.first!
+        let resultText = result.0
+        let resultValue = result.1
         
         cell.textLabel?.text = resultText
         cell.detailTextLabel?.text = String(resultValue.pages * resultValue.perpage)
@@ -102,20 +99,16 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let result = self.searchResults[indexPath.row]
-            
-        if let resultValue: Photos = result.values.first, let title = result.keys.first {
-           callSearchResultVC(photos: resultValue, title: title)
-        }
+        let resultValue = result.1
+        let title = result.0
         
+        callSearchResultVC(photos: resultValue, title: title)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func callSearchResultVC(photos: Photos, title: String) {
-        let vc = SearchResultsViewController()
-        vc.photos = photos.photo
-        vc.photosObj = photos
+        let vc = SearchResultsViewController(photosObj: photos, photos: photos.photo, searchTerm: title)
         vc.title = title
-        vc.searchTerm = title
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

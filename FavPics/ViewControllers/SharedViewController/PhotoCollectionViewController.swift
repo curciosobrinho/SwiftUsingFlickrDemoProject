@@ -17,6 +17,11 @@ protocol PhotoCollectionDelegate: AnyObject {
     func didScrollNearTheEnd()
 }
 
+extension PhotoCollectionDelegate {
+    func didPressFavoriteForPhoto(photo: Photo) {}
+    func didScrollNearTheEnd(){}
+}
+
 class PhotoCollectionViewCell : UICollectionViewCell {
     
     var imageView: UIImageView?
@@ -37,12 +42,12 @@ class PhotoCollectionViewCell : UICollectionViewCell {
         
         if let img = self.imageView {
             img.contentMode = .scaleToFill
-            self.addSubview(img)
+            self.contentView.addSubview(img)
         }
         
         if let bt = self.favoriteButton {
             bt.setImage(UIImage(named: "heart"), for: .normal)
-            self.addSubview(bt)
+            self.contentView.addSubview(bt)
         }
     }
 
@@ -82,14 +87,14 @@ class PhotoCollectViewController : UIViewController {
         
         self.view = view
         
-        AddObserver()
+        addObserver()
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func AddObserver() {
+    func addObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadDataFromNotification), name: .FavoriteChanged, object: nil)
     }
     
@@ -120,7 +125,9 @@ extension PhotoCollectViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             
         // get a reference to our storyboard cell
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath as IndexPath) as! PhotoCollectionViewCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath as IndexPath) as? PhotoCollectionViewCell else {
+            return UICollectionViewCell()
+        }
         
         if let photo = self.photos?[indexPath.row] {
             cell.imageView?.sd_setImage(with: URL(string: photo.imageURL), placeholderImage: UIImage(named: "placeholder"))
@@ -135,6 +142,7 @@ extension PhotoCollectViewController : UICollectionViewDataSource {
             cell.backgroundColor = UIColor.lightGray // make cell more visible in our example project
         }
         
+        /// here we could improve it by checking the total # of images and if it is the last page, do not do it...
         if indexPath.row == (self.photos!.count - 10) {
             if let delegate = delegate {
                 delegate.didScrollNearTheEnd()

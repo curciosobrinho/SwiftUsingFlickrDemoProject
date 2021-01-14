@@ -20,6 +20,7 @@ class FeaturedViewController : UIViewController {
         FavoriteStore.load()
     }
     
+    /// I left on didAppear so each time the user taps the featured button new pics will show up
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let service = FlickrSearchService()
@@ -33,12 +34,9 @@ class FeaturedViewController : UIViewController {
             case .Failure(let message):
                 // here we would treat the failure with an alert or something
                 print(message)
-                return;
             case .Error(let error):
                 // here we would treat the failure with an alert or something
                 print(error)
-                return;
-                
             }
         }
     }

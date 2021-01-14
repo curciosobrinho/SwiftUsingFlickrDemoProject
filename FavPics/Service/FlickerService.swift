@@ -31,7 +31,7 @@ enum RequestConfig {
 class FlickrConstants {
     
     /// TODO: add your api_key
-    static let api_key = "XXXXXX"
+    static let api_key = "5893bdf37dc630a973ef982b7ef1ebc3"///XXXXXX"
     static let per_page = 60
     static let featureURL = "https://www.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=\(FlickrConstants.api_key)&format=json&nojsoncallback=1"
     static let searchURL = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(FlickrConstants.api_key)&format=json&nojsoncallback=1&safe_search=1&per_page=\(FlickrConstants.per_page)&text=%@&page=%ld"
@@ -80,11 +80,13 @@ class FlickrSearchService{
         
         dataTask?.cancel()
         
+        weak var weakSelf = self
+        
         dataTask = defaultSession.dataTask(with: requestUrl , completionHandler: { (data, response, error) in
             
             // let's make sure we clean up the dataTask
             defer {
-                self.dataTask = nil
+                weakSelf?.dataTask = nil
             }
             
             if let error = error{
@@ -118,11 +120,13 @@ class FlickrSearchService{
             return
         }
         
+        weak var weakSelf = self
+        
         dataTask = defaultSession.dataTask(with: requestUrl , completionHandler: { (data, response, error) in
             
             // let's make sure we clean up the dataTask
             defer {
-                self.dataTask = nil
+                weakSelf?.dataTask = nil
             }
             
             if let error = error{
