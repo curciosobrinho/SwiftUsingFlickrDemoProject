@@ -124,7 +124,6 @@ extension PhotoCollectViewController : UICollectionViewDataSource {
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             
-        // get a reference to our storyboard cell
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath as IndexPath) as? PhotoCollectionViewCell else {
             return UICollectionViewCell()
         }
