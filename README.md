@@ -3,7 +3,7 @@ A Swift 5 Demo project using Flickr
 
 A simple demo project that uses a "shared" Collectionview in different ViewControllers
 
-The idea is to have one CollectionView Controller only and use the its view on other controllers when needed
+The idea is to have one CollectionView Controller only and use its view on other controllers when needed
 
 It uses a TabViewController and also saves the Favorites using *UserDefaults* 
 
